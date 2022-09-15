@@ -5,7 +5,7 @@ from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.math import assert_not_zero, assert_lt
 from starkware.cairo.common.uint256 import (Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check)
 
-from contracts.utils.constants import TRUE, FALSE, UINT8_MAX
+from lib.utils.constants import TRUE, FALSE, UINT8_MAX
 
 // Events
 @event
@@ -60,13 +60,22 @@ func ERC20_initializer{
     return ();
 }
 
+func ERC20_name{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*,
+        range_check_ptr
+    }() -> (name: felt){
+    let (name) = ERC20_name_.read();
+    return (name,);
+}
+
 func ERC20_symbol{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (symbol: felt){
     let (symbol) = ERC20_symbol_.read();
-    return(symbol);
+    return(symbol,);
 }
 
 func ERC20_totalSupply{
@@ -74,8 +83,8 @@ func ERC20_totalSupply{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (totalSupply: Uint256){
-    let (totalSupply: Uint256) = ERC20_total_supply.read();
-    return (totalSupply);
+    let (totalSupply) = ERC20_total_supply.read();
+    return (totalSupply,);
 }
 
 func ERC20_decimals{
@@ -84,7 +93,7 @@ func ERC20_decimals{
         range_check_ptr
     }() -> (decimals: felt){
     let (decimals) = ERC20_decimals_.read();
-    return (decimals);
+    return (decimals,);
 }
 
 func ERC20_balanceOf{
@@ -93,7 +102,7 @@ func ERC20_balanceOf{
         range_check_ptr
     }(account: felt) -> (balance: Uint256){
     let (balance: Uint256) = ERC20_balances.read(account);
-    return (balance);
+    return (balance,);
 }
 
 func ERC20_allowance{
@@ -102,7 +111,7 @@ func ERC20_allowance{
         range_check_ptr
     }(owner: felt, spender: felt) -> (remaining: Uint256){
     let (remaining: Uint256) = ERC20_allowances.read(owner, spender);
-    return (remaining);
+    return (remaining,);
 }
 
 func ERC20_transfer{
@@ -124,7 +133,7 @@ func ERC20_transferFrom{
         recipient: felt,
         amount: Uint256
     ) -> (){
-    alloc_locals
+    alloc_locals;
     let (caller) = get_caller_address();
     let (caller_allowance: Uint256) = ERC20_allowances.read(owner=sender, spender=caller);
 
@@ -156,7 +165,7 @@ func ERC20_approve{
     }
 
     with_attr error_message("ERC20: cannot approve to zero address"){
-        assert_not_zero(spender)
+        assert_not_zero(spender);
     }
 
     ERC20_allowances.write(caller, spender, amount);
@@ -191,7 +200,7 @@ func ERC20_decreaseAllowance{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(spender: felt, subtracted_value: Uint256) -> (){
-    alloc_locals
+    alloc_locals;
     with_attr error_message("ERC20: subtracted_value is not a valid uint256"){
         uint256_check(subtracted_value);
     }
@@ -223,7 +232,7 @@ func ERC20_mint{
     }
 
     // check for overflow on supply
-    let (supply: Uint256) = ERC20_total_supply.read()
+    let (supply: Uint256) = ERC20_total_supply.read();
     let (new_supply: Uint256, is_overflow) = uint256_add(supply, amount);
 
     with_attr error_message("ERC20: mint overflow"){
@@ -245,7 +254,7 @@ func ERC20_burn{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(account: felt, amount: Uint256){
-    alloc_locals
+    alloc_locals;
     with_attr error_message("ERC20: amount is not a valid Uint256"){
         uint256_check(amount);
     }
@@ -276,8 +285,8 @@ func _transfer{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(sender: felt, recipient: felt, amount: Uint256){
-    alloc_locals
-    with_attr error_message("ERC20: amount is not a valid Uint256){
+    alloc_locals;
+    with_attr error_message("ERC20: amount is not a valid Uint256"){
         uint256_check(amount);
     }
 
@@ -294,7 +303,7 @@ func _transfer{
     // validate amount
     let (enough_balance) = uint256_le(amount, sender_balance);
     with_attr error_message("ERC20: transfer amount exceeds balance"){
-        assert_not_zero(enough_balance)
+        assert_not_zero(enough_balance);
     }
 
     // subtract from sender

@@ -5,6 +5,9 @@ protostar_version = "0.4.2"
 libs_path = "lib"
 
 ["protostar.contracts"]
-main = [
-    "src/main.cairo",
+ERC20 = [
+    "src/contracts/mock/ERC20.cairo",
+]
+flashmining = [
+    "src/contracts/mock/Flashmining.cairo",
 ]
