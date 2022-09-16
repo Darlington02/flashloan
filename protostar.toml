@@ -14,3 +14,6 @@ flashmining = [
 flashminingborrower = [
     "src/contracts/mock/FlashminingBorrower.cairo",
 ]
+flashloanborrower = [
+    "src/contracts/FlashLoanBorrower.cairo",
+]
