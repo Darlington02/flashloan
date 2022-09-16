@@ -11,3 +11,6 @@ ERC20 = [
 flashmining = [
     "src/contracts/mock/Flashmining.cairo",
 ]
+flashminingborrower = [
+    "src/contracts/mock/FlashminingBorrower.cairo",
+]
