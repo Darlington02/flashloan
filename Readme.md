@@ -1,2 +1,2 @@
 # flashloan
-An update to tohrnii's flashloan-starknet
+Syntax update to tohrnii's flashloan-starknet
